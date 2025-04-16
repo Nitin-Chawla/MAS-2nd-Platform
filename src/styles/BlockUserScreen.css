@@ -1,0 +1,66 @@
+.container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  
+  .header {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  
+  .user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .user-card {
+    background-color: #fff;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .username {
+    font-size: 18px;
+    font-weight: 500;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px;
+  }
+  
+  
+  .suspend-button,
+  .unsuspend-button {
+    padding: 10px 16px;
+    font-weight: 600;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .suspend-button {
+    background-color: #e74c3c;
+  }
+  
+  .suspend-button:hover {
+    background-color: #c0392b;
+  }
+  
+  .unsuspend-button {
+    background-color: #2ecc71;
+  }
+  
+  .unsuspend-button:hover {
+    background-color: #27ae60;
+  }
+  

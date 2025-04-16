@@ -1,35 +1,38 @@
-import React from "react";
+import React, { use } from "react";
 import { db } from "../firebase";
 import { collection, onSnapshot, query, addDoc, where, getDocs, deleteDoc } from "firebase/firestore";
 import { useState, useEffect } from 'react';
+import "../styles/BlockUserScreen.css"; // Import your CSS file
 
 export default function BlockUserScreen() {
 
     const [reportedUsers, setReportedUsers] = useState([]);
+    const [counts, setCounts] = useState([]);
 
-    const suspendUser = async (item) => {
+    const suspendUser = async (user) => {
 
         const suspendUsersRef = collection(db, "SuspendedUsers");
-        const q = query(suspendUsersRef, where("username", "==", item.user));
+        const q = query(suspendUsersRef, where("username", "==", user));
         const snapshot = await getDocs(q);
 
         if (snapshot.docs.length === 0) {
             await addDoc(suspendUsersRef, {
-                username: item.user,
+                username: user,
             });
-            console.log("User suspended:", item.user);
+            alert('User has been suspended!');
         }
     }
 
-    const unsuspendUser = async (item) => {
+    const unsuspendUser = async (user) => {
     
       const suspendUsersRef = collection(db, "SuspendedUsers");
-      const q = query(suspendUsersRef, where("username", "==", item.user));
+      const q = query(suspendUsersRef, where("username", "==", user));
       const snapshot = await getDocs(q);
 
       if (snapshot.docs.length !== 0) {
           await deleteDoc(snapshot.docs[0].ref);
-          console.log("User unsuspended:", item.user);
+          console.log("User unsuspended:", user);
+          alert('User has been unsuspended!');
       }
     }
 
@@ -59,11 +62,11 @@ export default function BlockUserScreen() {
         const unsubscribe = onSnapshot(q, (snapshot) => {
     
           const reportedUsers = snapshot.docs.map((doc) => {
-            // console.log(doc.data())
+
             const firebaseData = doc.data();
-            return {
-              user: firebaseData.user
-            };
+            counts[firebaseData.user] = (counts[firebaseData.user] || 0) + 1
+            return firebaseData.user;
+
           });
     
           setReportedUsers(reportedUsers);
@@ -74,8 +77,31 @@ export default function BlockUserScreen() {
       }, []);
 
     return (
-        <div>
-            <ListComponent items={reportedUsers} />
-        </div>
+      
+      <div className="container">
+      <h1 className="header">Reported Users</h1>
+      <div className="user-list">
+        {[...new Set(reportedUsers)].map((user) => (
+          <div key={user} className="user-card">
+            <div className="username">{user} <p style={{color: '	#A9A9A9	'}}>Reported {counts[user]} times</p></div>
+            <div className="button-group">
+              <button
+                onClick={() => suspendUser(user)}
+                className="suspend-button"
+              >
+                Suspend
+              </button>
+              <button
+                onClick={() => unsuspendUser(user)}
+                className="unsuspend-button"
+              >
+                Unsuspend
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+      
     );
 }
